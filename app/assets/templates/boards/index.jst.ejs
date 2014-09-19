@@ -9,5 +9,5 @@
 </form>
 
 <% boards.each(function (board) { %>
-  <li class="board"><a href="#/boards/<%= board.id %>"><%= board.get('title') %></a></li>
+  <li class="board"><a href="#/boards/<%= board.id %>"><%= board.escape('title') %></a></li>
 <% });%>

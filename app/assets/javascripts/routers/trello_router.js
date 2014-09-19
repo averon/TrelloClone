@@ -21,12 +21,7 @@ TrelloClone.Routers.TrelloRouter = Backbone.Router.extend({
   },
   
   _swapView: function (newView) {
-    // TODO: remove event listeners when swapping views
-    if (!this._currentView) {
-      this._currentView = $('#main');
-    }
-    
-    this._currentView.empty();
-    this._currentView.html(newView.render().$el);
+    $('#main').empty();
+    $('#main').html(newView.render().$el);
   }
 });

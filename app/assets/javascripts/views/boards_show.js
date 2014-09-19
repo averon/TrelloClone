@@ -14,7 +14,7 @@ TrelloClone.Views.BoardShow = Backbone.View.extend({
   },
   events: {
     'submit #new-list-form': 'createList',
-    'click div.list button': 'destroyList'
+    'click .list button': 'destroyList'
   },
   createList: function (event) {
     var params, newList, lists;

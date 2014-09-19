@@ -1,0 +1,13 @@
+<form id="new-board-form">
+  <h3>Create a new Board!</h3>
+  <label for="new-board-title">Board Title</label>
+  <input id="new-board-title"
+         name="board[title]"
+         type="text">
+
+  <input type="submit" class="btn btn-primary">
+</form>
+
+<% boards.each(function (board) { %>
+  <li class="board"><a href="#/boards/<%= board.id %>"><%= board.get('title') %></a></li>
+<% });%>

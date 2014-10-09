@@ -20,3 +20,36 @@
 #new-board-form {
   margin-bottom: 20px;
 }
+
+.list {
+  padding: 5px;
+}
+
+.list h3 {
+  letter-spacing: -0.05em;
+}
+
+.cards {
+  padding: 0;
+}
+
+.card {
+  background: ivory;
+  border: 1px solid black;
+  border-radius: 5px;
+  list-style-type: none;
+  margin-bottom: 3px;
+  padding: 0 3px;
+}
+
+.card button {
+  display: none;
+}
+
+.card:hover button {
+  display: block;
+}
+
+.card h4 {
+  letter-spacing: -0.05em;
+}

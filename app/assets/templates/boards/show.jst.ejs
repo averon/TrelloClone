@@ -10,10 +10,5 @@
   <input type='submit'class="btn btn-primary">
 </form>
 
-<!-- TODO: move this into view so we're not looping within the template -->
-<% lists.each(function (list) { %>
-  <div class="list">
-    <h3><%= list.escape('title') %></h3>
-    <button id="<%= list.id %>" class="btn btn-primary">Delete</button>
-  </div>
-<% }); %>
+<div class='board-lists'>
+</div>

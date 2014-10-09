@@ -1,11 +1,28 @@
 TrelloClone.Views.BoardShow = Backbone.View.extend({
+  // TODO: fix rendering lists - occurs 3x more than it should.
   template: JST['boards/show'],
   render: function () {
-    var renderedContent = this.template({
-      board: this.model,
-      lists: this.model.lists()
+    var renderedContent, lists, $boardLists;
+    renderedContent = this.template({
+      board: this.model
     });
     this.$el.html(renderedContent);
+    
+    $boardLists = this.$('.board-lists');
+    
+    lists = this.model.lists();
+    lists.each(function (list) {
+      var listShow = new TrelloClone.Views.ListShow({ model: list });
+      renderedContent = listShow.render().$el
+      $boardLists.append(renderedContent);
+    });
+    
+    this.$('.cards').sortable({
+      connectWith: $('.cards')
+    });
+    
+    this.$('.board-lists').sortable();
+        
     return this;
   },
   initialize: function () {
@@ -14,7 +31,7 @@ TrelloClone.Views.BoardShow = Backbone.View.extend({
   },
   events: {
     'submit #new-list-form': 'createList',
-    'click .list button': 'destroyList'
+    'click .list .delete': 'destroyList'
   },
   createList: function (event) {
     var params, newList, lists;

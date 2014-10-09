@@ -19,7 +19,9 @@ test:
   timeout: 5000
 
 production:
-  adapter: sqlite3
-  database: db/production.sqlite3
+  adapter: postgresql 
+  encoding: unicode
+  database: trello_clone 
   pool: 5
+  username: rob
   timeout: 5000

@@ -1,64 +1,50 @@
-TrelloClone.Views.ListShow = Backbone.View.extend({
+TrelloClone.Views.ListShow = Backbone.CompositeView.extend({
   className: 'list',
   template: JST['lists/show'],
   render: function () {
     var renderedContent, cards, $listCards, $cardCreate;
     renderedContent = this.template({ list: this.model });
     this.$el.html(renderedContent);
-    this.$el.attr('id', this.model.id);
-    
-    // TODO: render less!
-    $listCards = this.$('.cards');
-    
-    cards = this.model.cards();
-    cards.each(function (card) {
-      var cardShow = new TrelloClone.Views.CardShow({ model: card });
-      renderedContent = cardShow.render().$el
-      $listCards.append(renderedContent);
+    this.attachSubviews();
+
+    this.$('.cards').sortable({
+      connectWith: $('.cards')
     });
-    
-    $createCard = $('<button>Add new card...</button>');
-    $createCard.attr({
-      'class': 'create card',
-      'data-toggle': 'modal',
-      'data-target': '#createCard-' + this.model.id
-    });
-    $listCards.append($createCard);
-    
-    return this;
+
+   return this;
   },
   initialize: function () {
-    this.listenTo(this.model.cards(), 'add remove', this.render);
+    this.listenTo(this.model, 'change', this.render);
+    this.listenTo(this.model.cards(), 'add', this.addCard);
+
+    var view = this;
+    cards = this.model.cards();
+    cards.each(function (card) {
+      view.addCard(card);
+    });
   },
   events: {
-    'submit .new-card-form': 'createCard',
-    'click .destroy-card': 'destroyCard',
+    'click .new-card': 'newCard',
+    'click .destroy-list': 'destroyList'
     // TODO: persist ord after drop
     // 'sortstop .cards': 'updateOrd'
   },
-  createCard: function (event) {
-    var params, cards, newCard;
-    event.preventDefault();
-    
-    params = $(event.currentTarget).serializeJSON();
-    params['card']['list_id'] = this.model.id;
-    
-    cards = this.model.cards();
-    
-    newCard = new TrelloClone.Models.Card(params['card']);
-    newCard.save({}, {
-      success: function () {
-        cards.add(newCard);
-        $('body').removeClass('modal-open');
-        $('.modal-backdrop').remove();
-      }
-    });
+  addCard: function (card) {
+    var cardShow = new TrelloClone.Views.CardShow({ model: card });
+    this.listenTo(cardShow, 'removeCard', this.removeCard);
+    this.addSubview('.cards', cardShow.render());
   },
-  destroyCard: function (event) {
-    var id, card;
-    id = event.currentTarget.id;
-    card = this.model.cards().get(id);
-    card.destroy();
+  removeCard: function (card) {
+    this.removeSubview('.cards', card);
+    this.render();
+  },
+  destroyList: function () {
+    this.model.destroy();
+    this.trigger('removeList', this);
+  },
+  newCard: function (event) {
+    event.preventDefault();
+    PubSub.publish('newCard', this.model)
   },
   updateOrd: function (event) {
     var $list;

@@ -17,7 +17,6 @@ TrelloClone.Views.BoardShow = Backbone.CompositeView.extend({
     return this;
   },
   initialize: function () {
-    this.listenTo(this.model, 'sync', this.render);
     this.listenTo(this.model.lists(), 'add', this.addList);
 
     this.newCardChannel = PubSub.subscribe('newCard', this.launchNewCardModal.bind(this));
@@ -29,12 +28,16 @@ TrelloClone.Views.BoardShow = Backbone.CompositeView.extend({
   },
   remove: function () {
     PubSub.unsubscribe(this.newCardChannel);
-    Backbone.View.Prototype.remove.call(this);
+    Backbone.View.prototype.remove.call(this);
   },
   addList: function (list) {
     var listShow = new TrelloClone.Views.ListShow({ model: list });
     this.addSubview('.board-lists', listShow.render()); 
     this.listenTo(listShow, 'removeList', this.removeList);
+
+    this.$('.cards').sortable({
+      connectWith: $('.cards')
+    });
   },
   events: {
     'submit #new-list-form': 'createList',
@@ -48,5 +51,20 @@ TrelloClone.Views.BoardShow = Backbone.CompositeView.extend({
   },
   removeList: function (list) {
     this.removeSubview('.board-lists', list);
+  },
+  createList: function (event) {
+    var view, params, newList;
+    event.preventDefault();
+
+    view = this;
+    params = $(event.currentTarget).serializeJSON();
+    params['list']['board_id'] = this.model.id;
+    
+    newList = new TrelloClone.Models.List(params['list']);
+    newList.save({}, {
+      success: function (response) {
+        view.model.lists().add(response);
+      }
+    });
   }
 });

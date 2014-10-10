@@ -7,11 +7,7 @@ TrelloClone.Views.ListShow = Backbone.CompositeView.extend({
     this.$el.html(renderedContent);
     this.attachSubviews();
 
-    this.$('.cards').sortable({
-      connectWith: $('.cards')
-    });
-
-   return this;
+    return this;
   },
   initialize: function () {
     this.listenTo(this.model, 'change', this.render);

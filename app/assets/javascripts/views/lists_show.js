@@ -10,21 +10,22 @@ TrelloClone.Views.ListShow = Backbone.CompositeView.extend({
     return this;
   },
   initialize: function () {
-//    this.listenTo(this.model, 'change', this.render);
-    this.listenTo(this.model.cards(), 'add', this.addCard);
+    this.listenTo(this.collection, 'add', this.addCard);
 
     var view = this;
 
-    cards = this.model.cards();
-    cards.each(function (card) {
+    this.collection.each(function (card) {
       view.addCard(card);
     });
   },
   events: {
     'click .new-card': 'newCard',
     'click .destroy-list': 'destroyList',
+    
     // TODO: persist ord after drop
-    'sortstop .cards': 'updateOrd'
+    'sortreceive .cards': 'sortReceive',
+    'sortremove .cards': 'sortRemove',
+    'sortstop .cards': 'saveCards'
   },
   addCard: function (card) {
     var cardShow = new TrelloClone.Views.CardShow({ model: card });
@@ -33,7 +34,6 @@ TrelloClone.Views.ListShow = Backbone.CompositeView.extend({
   },
   removeCard: function (card) {
     this.removeSubview('.cards', card);
-    this.render();
   },
   destroyList: function () {
     this.model.destroy();
@@ -43,10 +43,29 @@ TrelloClone.Views.ListShow = Backbone.CompositeView.extend({
     event.preventDefault();
     PubSub.publish('newCard', this.model)
   },
-  updateOrd: function (event) {
-    var $list;
-    $list = $(event.currentTarget).find('li');
-    $list.each(function (li) {
+  sortReceive: function (event, ui) {
+    var $card = ui.item,
+        cardId = $card.data('card-id'),
+        newOrd = $card.index();
+    var newCard = new TrelloClone.Models.Card({
+      id: cardId,
+      list_id: this.model.id,
+      ord: newOrd
     });
+    newCard.save();
+    this.collection.add(newCard, { silent: true });
+  },
+  removeCard: function (event, ui) {
+    var $card = ui.item,
+        cardId = $card.data('card-id'),
+        cardModel = this.collection.get(cardId);
+    cardModel.destroyCard();
+  },
+  saveCards: function (event) {
+    debugger;
+//    var $list;
+//    $list = $(event.currentTarget).find('li');
+//    $list.each(function (idx, li) {
+//    });
   }
 });

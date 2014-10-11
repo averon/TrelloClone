@@ -59,6 +59,7 @@ TrelloClone.Views.BoardShow = Backbone.CompositeView.extend({
     view = this;
     params = $(event.currentTarget).serializeJSON();
     params['list']['board_id'] = this.model.id;
+    $(event.currentTarget).find('#new-list-title').val('');
     
     newList = new TrelloClone.Models.List(params['list']);
     newList.save({}, {

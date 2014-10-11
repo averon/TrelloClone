@@ -21,9 +21,9 @@ TrelloClone.Views.ListShow = Backbone.CompositeView.extend({
   },
   events: {
     'click .new-card': 'newCard',
-    'click .destroy-list': 'destroyList'
+    'click .destroy-list': 'destroyList',
     // TODO: persist ord after drop
-    // 'sortstop .cards': 'updateOrd'
+    'sortstop .cards': 'updateOrd'
   },
   addCard: function (card) {
     var cardShow = new TrelloClone.Views.CardShow({ model: card });
@@ -45,8 +45,8 @@ TrelloClone.Views.ListShow = Backbone.CompositeView.extend({
   updateOrd: function (event) {
     var $list;
     $list = $(event.currentTarget).find('li');
+    debugger;
     $list.each(function (li) {
-      li.id
     });
   }
 });

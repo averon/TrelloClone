@@ -1,4 +1,4 @@
-u1 = User.create(email: 'guest@rwb-trelloclone.com', password: 'password')
+u1 = User.create(email: 'guest@rwb-trelloclone.com', password: 'guest')
 u2 = User.create(email: 'thejamaicandave@gmail.com', password: 'password')
 
 b1 = u1.boards.create(title: 'Workout')

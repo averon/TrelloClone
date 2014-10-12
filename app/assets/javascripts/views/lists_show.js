@@ -6,6 +6,7 @@ TrelloClone.Views.ListShow = Backbone.CompositeView.extend({
     renderedContent = this.template({ list: this.model });
     this.$el.html(renderedContent);
     this.attachSubviews();
+    this.resortSubviews();
 
     return this;
   },
@@ -22,7 +23,6 @@ TrelloClone.Views.ListShow = Backbone.CompositeView.extend({
     'click .new-card': 'newCard',
     'click .destroy-list': 'destroyList',
     
-    // TODO: persist ord after drop
     'sortreceive .cards': 'sortReceive',
     'sortremove .cards': 'sortRemove',
     'sortstop .cards': 'saveCards'
@@ -44,28 +44,61 @@ TrelloClone.Views.ListShow = Backbone.CompositeView.extend({
     PubSub.publish('newCard', this.model)
   },
   sortReceive: function (event, ui) {
+    console.log('sortReceive');
     var $card = ui.item,
         cardId = $card.data('card-id'),
         newOrd = $card.index();
+
     var newCard = new TrelloClone.Models.Card({
       id: cardId,
       list_id: this.model.id,
       ord: newOrd
     });
-    newCard.save();
-    this.collection.add(newCard, { silent: true });
+
+    newCard.save({}, {
+      success: function (response) {
+        var cardView = new TrelloClone.Views.CardShow({ model: response });
+        this.collection.add(response, { silent: true });
+        this.subviews('.cards').push(cardView);
+
+        event.stopPropagation();
+        this.saveCards();
+      }.bind(this)
+    });
   },
-  removeCard: function (event, ui) {
-    var $card = ui.item,
+  sortRemove: function (event, ui) {
+    console.log('sortRemove');
+    var $list = $(event.currentTarget);
+        $card = ui.item,
         cardId = $card.data('card-id'),
         cardModel = this.collection.get(cardId);
-    cardModel.destroyCard();
+        cardView = _.findWhere(this.subviews('.cards'), {model: cardModel});
+        subviews = this.subviews('.cards');
+    this.collection.remove(cardModel);
+    subviews.splice(subviews.indexOf(cardView), 1);
+ 
+    event.stopPropagation();
+    this.saveCards();
   },
-  saveCards: function (event) {
-    debugger;
-//    var $list;
-//    $list = $(event.currentTarget).find('li');
-//    $list.each(function (idx, li) {
-//    });
+  saveCards: function () {
+    var $list = this.$('.cards'),
+        $cards = $list.find('li');
+    console.log('saveCards (' + $list.parent().find('h3').html() + ')');
+
+    $cards.each(function (idx, card) {
+      var cardId = $(card).data('card-id'),
+          cardModel = this.collection.get(cardId);
+      if (cardModel.get('ord') === idx) { return; }
+
+      cardModel.save({ ord: idx });
+    }.bind(this));
+
+    this.resortSubviews();
+  },
+  resortSubviews: function () {
+    console.log('resortSubviews');
+    this.subviews('.cards').sort(function (subview_a, subview_b) {
+      return subview_a.model.get('ord') - subview_b.model.get('ord');
+    });
   }
 });

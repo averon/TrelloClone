@@ -3,7 +3,7 @@ json.(@board, :title, :user_id, :created_at, :updated_at)
 json.lists @board.lists do |list|
   json.id list.id
   json.title list.title
-  json.board_id list.id
+  json.board_id list.board_id
   json.ord list.ord
   json.created_at list.created_at
   json.updated_at list.updated_at

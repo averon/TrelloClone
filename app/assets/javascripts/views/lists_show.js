@@ -10,6 +10,11 @@ TrelloClone.Views.ListShow = Backbone.CompositeView.extend({
 
     return this;
   },
+  attributes: function () {
+    return {
+      'data-list-id': this.model.id
+    }
+  },
   initialize: function () {
     this.listenTo(this.collection, 'add', this.addCard);
 
@@ -44,7 +49,6 @@ TrelloClone.Views.ListShow = Backbone.CompositeView.extend({
     PubSub.publish('newCard', this.model)
   },
   sortReceive: function (event, ui) {
-    console.log('sortReceive');
     var $card = ui.item,
         cardId = $card.data('card-id'),
         newOrd = $card.index();
@@ -67,7 +71,6 @@ TrelloClone.Views.ListShow = Backbone.CompositeView.extend({
     });
   },
   sortRemove: function (event, ui) {
-    console.log('sortRemove');
     var $list = $(event.currentTarget);
         $card = ui.item,
         cardId = $card.data('card-id'),
@@ -83,7 +86,6 @@ TrelloClone.Views.ListShow = Backbone.CompositeView.extend({
   saveCards: function () {
     var $list = this.$('.cards'),
         $cards = $list.find('li');
-    console.log('saveCards (' + $list.parent().find('h3').html() + ')');
 
     $cards.each(function (idx, card) {
       var cardId = $(card).data('card-id'),
@@ -96,7 +98,6 @@ TrelloClone.Views.ListShow = Backbone.CompositeView.extend({
     this.resortSubviews();
   },
   resortSubviews: function () {
-    console.log('resortSubviews');
     this.subviews('.cards').sort(function (subview_a, subview_b) {
       return subview_a.model.get('ord') - subview_b.model.get('ord');
     });

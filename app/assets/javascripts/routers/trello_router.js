@@ -16,7 +16,8 @@ TrelloClone.Routers.TrelloRouter = Backbone.Router.extend({
   
   boardShow: function (id) {
     var board = TrelloClone.Collections.boards.getOrFetch(id);
-    var showView = new TrelloClone.Views.BoardShow({ model: board });
+    var lists = board.lists();
+    var showView = new TrelloClone.Views.BoardShow({ model: board, collection: lists });
     this._swapView(showView);
 
     $('#main .cards').sortable({

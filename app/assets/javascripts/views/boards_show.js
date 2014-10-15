@@ -14,6 +14,7 @@ TrelloClone.Views.BoardShow = Backbone.CompositeView.extend({
   initialize: function () {
     this.listenTo(this.model.lists(), 'add', this.addList);
     this.newCardChannel = PubSub.subscribe('newCard', this.launchNewCardModal.bind(this));
+    this.showCardChannel = PubSub.subscribe('launchCardDetail', this.launchCardDetail.bind(this));
 
     var view = this;
     this.model.lists().each(function (list) {
@@ -45,6 +46,13 @@ TrelloClone.Views.BoardShow = Backbone.CompositeView.extend({
     this.addSubview('.card-modal', newCardView);
     this.attachSubview('.card-modal', newCardView);
     this.$('#newCard').modal('show');
+  },
+  launchCardDetail: function (channel, card) {
+    this.removeAllSubviews('.card-modal');
+    var cardShow = new TrelloClone.Views.CardModal({ model: card });
+    this.addSubview('.card-modal', cardShow);
+    this.attachSubview('.card-modal', cardShow);
+    this.$('#cardModal').modal('show');
   },
   removeList: function (list) {
     this.removeSubview('.board-lists', list);

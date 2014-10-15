@@ -13,11 +13,18 @@ TrelloClone.Views.CardShow = Backbone.View.extend({
       'data-card-id': this.model.id
     }
   },
-  events: {
-    'click .destroy-card': 'destroyCard',
+  initialize: function () {
+    this.listenTo(this.model, 'change', this.render);
   },
-  destroyCard: function () {
-    this.model.destroy();
-    this.trigger('removeCard', this);
+  events: {
+    'click': 'launchCardDetail',
+//    'click .destroy-card': 'destroyCard',
+  },
+//  destroyCard: function () {
+//    this.model.destroy();
+//    this.trigger('removeCard', this);
+//  },
+  launchCardDetail: function () {
+    PubSub.publish('launchCardDetail', this.model);
   }
 });

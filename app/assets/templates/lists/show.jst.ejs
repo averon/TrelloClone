@@ -1,10 +1,12 @@
+<button type="button" class="close destroy-list">&times;</button>
 <h3><%= list.escape('title') %></h3>
 
 <ol class="cards">
 </ol>
 
-<button class="new-card card"
-        data-toggle="modal"
-        data-target="#createCard-<%= list.id %>">Add new card...</button>
-<button class="btn btn-primary destroy-list">Delete</button>
+<div class="new-card">
+  <div class="new-card-placeholder">
+    New card...
+  </div>
+</div>
 

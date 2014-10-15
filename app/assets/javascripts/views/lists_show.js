@@ -25,7 +25,8 @@ TrelloClone.Views.ListShow = Backbone.CompositeView.extend({
     });
   },
   events: {
-    'click .new-card': 'newCard',
+    'click .new-card-placeholder': 'showNewCard',
+    'click .close-new-card': 'hideNewCard',
     'click .destroy-list': 'destroyList',
     
     'sortreceive .cards': 'sortReceive',
@@ -44,9 +45,17 @@ TrelloClone.Views.ListShow = Backbone.CompositeView.extend({
     this.model.destroy();
     this.trigger('removeList', this);
   },
-  newCard: function (event) {
+  showNewCard: function (event) {
     event.preventDefault();
-    PubSub.publish('newCard', this.model)
+    var newCard = new TrelloClone.Views.CardNew({ model: this.model });
+    this.$('.new-card').empty();
+    this.addSubview('.new-card', newCard);
+    this.listenTo(newCard, 'hideNewCardView', this.hideNewCard);
+
+//    PubSub.publish('newCard', this.model);
+  },
+  hideNewCard: function () {
+    this.$('.new-card').html('<div class="new-card-placeholder">Add card...</div>') 
   },
   sortReceive: function (event, ui) {
     var $card = ui.item,

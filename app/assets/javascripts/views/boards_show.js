@@ -13,7 +13,7 @@ TrelloClone.Views.BoardShow = Backbone.CompositeView.extend({
   },
   initialize: function () {
     this.listenTo(this.model.lists(), 'add', this.addList);
-    this.newCardChannel = PubSub.subscribe('newCard', this.launchNewCardModal.bind(this));
+//    this.newCardChannel = PubSub.subscribe('newCard', this.launchNewCardModal.bind(this));
     this.showCardChannel = PubSub.subscribe('launchCardDetail', this.launchCardDetail.bind(this));
 
     var view = this;
@@ -64,6 +64,7 @@ TrelloClone.Views.BoardShow = Backbone.CompositeView.extend({
 
     view = this;
     params = $(event.currentTarget).serializeJSON();
+    params['list']['board_id'] = this.model.id;
     $(event.currentTarget).find('#new-list-title').val('');
     
     newList = new TrelloClone.Models.List(params['list']);

@@ -14,11 +14,9 @@ TrelloClone.Views.CardModal = Backbone.View.extend({
   saveCard: function (event) {
     event.preventDefault();
     var params = $(event.currentTarget).serializeJSON();
-    debugger;
     this.model.save(params['card'], {
       success: function (response) {
         $('#cardModal').modal('hide');
-        debugger;
       }
     });
   }

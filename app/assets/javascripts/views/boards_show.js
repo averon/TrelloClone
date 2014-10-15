@@ -23,6 +23,7 @@ TrelloClone.Views.BoardShow = Backbone.CompositeView.extend({
   },
   remove: function () {
     PubSub.unsubscribe(this.newCardChannel);
+    PubSub.unsubscribe(this.showCardChannel);
     Backbone.View.prototype.remove.call(this);
   },
   addList: function (list) {

@@ -18,6 +18,8 @@ TrelloClone.Views.ListShow = Backbone.CompositeView.extend({
   initialize: function () {
     this.listenTo(this.collection, 'add', this.addCard);
 
+    this.showTitle = PubSub.subscribe('showTitle', this.showTitle.bind(this));
+
     var view = this;
 
     this.collection.each(function (card) {
@@ -28,6 +30,7 @@ TrelloClone.Views.ListShow = Backbone.CompositeView.extend({
     'click .new-card-placeholder': 'showNewCard',
     'click .close-new-card': 'hideNewCard',
     'click .destroy-list': 'destroyList',
+    'click .list-title h3': 'editTitle',
     
     'sortreceive .cards': 'sortReceive',
     'sortremove .cards': 'sortRemove',
@@ -51,11 +54,17 @@ TrelloClone.Views.ListShow = Backbone.CompositeView.extend({
     this.$('.new-card').empty();
     this.addSubview('.new-card', newCard);
     this.listenTo(newCard, 'hideNewCardView', this.hideNewCard);
-
-//    PubSub.publish('newCard', this.model);
   },
   hideNewCard: function () {
     this.$('.new-card').html('<div class="new-card-placeholder">Add card...</div>') 
+  },
+  editTitle: function () {
+    var titleEdit = new TrelloClone.Views.TitleEdit({ model: this.model });
+    this.$('.list-title').empty();
+    this.addSubview('.list-title', titleEdit);
+  },
+  showTitle: function () {
+    this.$('.list-title').html('<h3>' + this.model.escape('title') + '</h3>');
   },
   sortReceive: function (event, ui) {
     var $card = ui.item,

@@ -31,7 +31,7 @@
 
 .cards {
   padding: 0;
-  min-height: 20px;
+  min-height: 5px;
 }
 
 .card {
@@ -43,11 +43,16 @@
   padding: 0 3px;
 }
 
-.card button {
-  display: none;
+.card:hover {
+  cursor: pointer;
 }
 
-.card:hover button {
+.card-detail-icon {
+  display: none;
+  color: grey;
+}
+
+.card:hover .card-detail-icon {
   display: block;
 }
 
@@ -55,6 +60,25 @@
   letter-spacing: -0.05em;
 }
 
+.new-card-placeholder {
+  border-radius: 5px;
+  padding: 0 3px;
+}
+
+.new-card-placeholder:hover {
+  background: ivory;
+  cursor: pointer;
+}
+
+.list-title h3:hover {
+  cursor: pointer;
+}
+
+.card-title h3:hover {
+  cursor: pointer;
+}
+
 textarea {
+  width: 100%;
   resize: vertical;
 }

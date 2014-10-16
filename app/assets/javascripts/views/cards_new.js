@@ -17,17 +17,21 @@ TrelloClone.Views.CardNew = Backbone.View.extend({
 
     view = this;
     cards = this.model.cards();
+
     params = $(event.currentTarget).serializeJSON();
-    params['card']['list_id'] = this.model.id;
-    params['card']['ord'] = cards.length;
-    
-    newCard = new TrelloClone.Models.Card(params['card']);
-    newCard.save({}, {
-      success: function () {
-        cards.add(newCard);
-        view.remove();
-        view.trigger('hideNewCardView');
-      }
-    });
+
+    if (params['card']['title'] !== '') {
+      params['card']['list_id'] = this.model.id;
+      params['card']['ord'] = cards.length;
+      
+      newCard = new TrelloClone.Models.Card(params['card']);
+      newCard.save({}, {
+        success: function () {
+          cards.add(newCard);
+          view.remove();
+          view.trigger('hideNewCardView');
+        }
+      });
+    } 
   }
 });

@@ -1,0 +1,20 @@
+TrelloClone.Views.TitleEdit = Backbone.View.extend({
+  className: 'form',
+  template: JST['title_edit'],
+  render: function () {
+    var renderedContent = this.template({ model: this.model });
+    this.$el.html(renderedContent);
+    return this;
+  },
+  events: {
+    'click .update-title': 'editTitle',
+    'click .close-edit-title': 'closeEditTitle'
+  },
+  editTitle: function (event) {
+    debugger;
+    this.model.set('title');
+  },
+  closeNewCard: function () {
+    PubSub.publish('showTitle');
+  }
+});
